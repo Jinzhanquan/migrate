@@ -1,0 +1,3 @@
+#!/bin/bash
+mysql -u$1 -p$2 -e 'show tables from URPCS_SQL'
+
