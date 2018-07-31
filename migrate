@@ -5,12 +5,12 @@ PORT='3306'       #-P
 USER='root'       #-u
 PASSWORD='Fangle12#$' #-p
 DB='urpcs'
-INIT_SQL=(urpcs.sql urpcs1.sql) 
+INIT_SQL=(urpcs.sql urpcs1.sql urpcs2.sql) 
 POTH='./sql/'
+CMD='help'
 
 array=()
 function split()
-
 {
   split_ret=${1//=/ }
   count=0
@@ -21,6 +21,7 @@ function split()
   done 
 }
 
+
 function init()
 {
     echo "init command"
@@ -28,15 +29,32 @@ function init()
     do 
        echo 111:$arg 
        cat $POTH$arg | mysql -u$USER -p$PASSWORD $DB
-       mysql -u$USER -p$PASSWORD -e "show tables from $DB"
     done
+        mysql -u$USER -p$PASSWORD -e "show tables from $DB"
 }
 
-function help{
+
+function help()
+{
   echo 'help function'
+  echo ' ./migrate  [-param=value] <cmd>    -- cmd format'
+  echo 'parameters:'
+  echo ' -h                                 - mysql host ip address '
+  echo ' -p                                 - mysql host port '
+  echo 'cmd:'
+  echo ' init                               - init databse'
+  echo 'example:'
+  echo './migrate                           -- get help '
+  echo './migrate init                      -- init databse'
 }
 
-CMD="help"
+
+function up_cmd()
+{
+  echo 'up cmd'
+  
+}
+ 
 
 for arg in $*
 do 
@@ -58,24 +76,25 @@ do
           PORT=${array[1]}
           echo "replace port:"$PORT
         ;;
-        up)
-          echo "up command"
-        ;;
-      init)
+        init|up|down|help)
           CMD=${array[0]}
         ;;
         *)
           echo "do not know:"${array[0]}
         ;;
   esac
-done
+  done
 
 
-case $CMD in
-  init)
-    init
-  ;;
-  *)
-    help
-  ;;
-esac
+
+  case $CMD in
+     init)
+         init
+       ;;
+       up)
+         up_cmd
+       ;;
+     help)
+         help
+       ;;
+  esac
